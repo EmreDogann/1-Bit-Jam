@@ -805,7 +805,19 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
+    Android: 
+    EmbeddedLinux: 
+    GameCoreXboxOne: 
+    Nintendo Switch: 
+    PS4: 
+    PS5: 
+    QNX: 
+    Stadia: 
     Standalone: ADVANCED_SCENE_MANAGER
+    VisionOS: 
+    WebGL: 
+    XboxOne: 
+    tvOS: 
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}

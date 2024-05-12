@@ -7,7 +7,7 @@
       "dependencies": {
         "com.unity.ugui": "1.0.0"
       },
-      "hash": "e56483d404441832a982cca63b3f1b7af3616a7a"
+      "hash": "c9006cf97ec900a0364230b8afb3c1f58482d4fa"
     },
     "com.ems.main-scene-auto-loading": {
       "version": "https://github.com/EmreDogann/unity-main-scene-auto-loading.git#upm",
@@ -25,6 +25,13 @@
       "dependencies": {},
       "hash": "f9e256127babf42123ebef9c06572ba4877ba2ae"
     },
+    "com.floppycoffee.guid-reference": {
+      "version": "https://github.com/EmreDogann/unity-guid-reference.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "0c4f8094f57f55d42d4a103847be214dae169168"
+    },
     "com.github.siccity.xnode": {
       "version": "https://github.com/EmreDogann/xNode.git",
       "depth": 0,
@@ -40,7 +47,7 @@
       "hash": "b49ea1a91ed93352e6f19b13809983188016c622"
     },
     "com.kylewbanks.scenerefattribute": {
-      "version": "0.11.1",
+      "version": "0.12.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {},

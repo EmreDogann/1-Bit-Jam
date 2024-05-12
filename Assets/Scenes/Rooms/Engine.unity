@@ -131,6 +131,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 485381388665421630, guid: 2478209f45b2a6e45aff0975ea873352,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4690aed3c4b03e3478d30c9302763aee, type: 2}
     - target: {fileID: 1546449200315965017, guid: 2478209f45b2a6e45aff0975ea873352,
         type: 3}
       propertyPath: m_Name
@@ -184,6 +189,11 @@ PrefabInstance:
     - target: {fileID: 3440967228509801401, guid: 2478209f45b2a6e45aff0975ea873352,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5651369586889179750, guid: 2478209f45b2a6e45aff0975ea873352,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -51,7 +51,7 @@ namespace SceneHandling
 
         public static ScriptableObjectSingletonBase CreateOrLoad(Type type)
         {
-            Debug.Log($"Creating or Loading {type}");
+            // Debug.Log($"Creating or Loading {type}");
             ScriptableObjectSingletonBase asset = Load(type);
             if (asset == null)
             {

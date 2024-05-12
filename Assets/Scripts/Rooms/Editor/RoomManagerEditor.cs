@@ -16,7 +16,7 @@ namespace Rooms.Editor
 
         private SerializedProperty _startingRoomProp;
         private SerializedProperty _startingRoomEnteringFromProp;
-        private SerializedProperty _loadStartingRoomOnAwakeProp;
+        private SerializedProperty _loadRoomTypeProp;
 
         private SerializedProperty _roomsProp;
         private SerializedProperty _currentRoomProp;
@@ -34,7 +34,7 @@ namespace Rooms.Editor
 
             _startingRoomProp = serializedObject.FindProperty("startingRoom");
             _startingRoomEnteringFromProp = serializedObject.FindProperty("startingRoomEnteringFrom");
-            _loadStartingRoomOnAwakeProp = serializedObject.FindProperty("loadStartingRoomOnAwake");
+            _loadRoomTypeProp = serializedObject.FindProperty("loadRoomType");
 
             _roomsProp = serializedObject.FindProperty("rooms");
             _currentRoomProp = serializedObject.FindProperty("currentRoom");
@@ -55,8 +55,8 @@ namespace Rooms.Editor
 
             EditorGUILayout.PropertyField(_roomLoadWaitTimeProp);
 
-            EditorGUILayout.PropertyField(_loadStartingRoomOnAwakeProp);
-            if (_loadStartingRoomOnAwakeProp.boolValue)
+            EditorGUILayout.PropertyField(_loadRoomTypeProp);
+            if (_loadRoomTypeProp.enumValueIndex == (int)InitRoomLoadType.StartingRoom)
             {
                 EditorGUI.BeginChangeCheck();
 
@@ -125,12 +125,18 @@ namespace Rooms.Editor
 
             var availableRooms = new List<string>();
             var availableRoomsNicified = new List<string>();
-            Room currentRoom = roomManager.GetRoom(selectedRoom);
-
-            foreach (Door door in currentRoom.Doors())
+            if (roomManager)
             {
-                availableRooms.Add(door.GetConnectingRoom().ToString());
-                availableRoomsNicified.Add(ObjectNames.NicifyVariableName(door.GetConnectingRoom().ToString()));
+                Room currentRoom = roomManager.GetRoom(selectedRoom);
+
+                if (currentRoom)
+                {
+                    foreach (Door door in currentRoom.Doors())
+                    {
+                        availableRooms.Add(door.GetConnectingRoom().ToString());
+                        availableRoomsNicified.Add(ObjectNames.NicifyVariableName(door.GetConnectingRoom().ToString()));
+                    }
+                }
             }
 
             return new Tuple<string[], string[]>(availableRooms.ToArray(), availableRoomsNicified.ToArray());

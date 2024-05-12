@@ -187,6 +187,19 @@
 				return (zBufferParam.z * depth + zBufferParam.w);
 			}
 
+            //smooth version of step
+            float aaStep(float compValue, float gradient){
+              float change = fwidth(gradient);
+              //base the range of the inverse lerp on the change over two pixels
+              float lowerEdge = compValue - change;
+              float upperEdge = compValue + change;
+              //do the inverse interpolation
+              float stepped = (gradient - lowerEdge) / (upperEdge - lowerEdge);
+              stepped = saturate(stepped);
+              //smoothstep version here would be `smoothstep(lowerEdge, upperEdge, gradient)`
+              return stepped;
+            }
+
             float4 Fragment(Varyings input) : SV_Target
             {
                 float3 sourceColor = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, input.texcoord).rgb;
@@ -277,9 +290,9 @@
 					float3 output = SAMPLE_TEXTURE2D(_ColorRampTex, sampler_ColorRampTex, float2(ramp, 0.5f));
             	#else
             		// float3 output = lerp(_BG, _FG, round(ramp));
-            		// float3 output = lerp(_MG, _FG, step(_MGThreshold, abs(lum - ditherLum)));
-            		// output = lerp(_BG, output, ramp);
-            		float3 output = lerp(_BG, sourceColor, ramp); // No thresholding
+            		float3 output = lerp(_MG, _FG, step(_MGThreshold, abs(lum - ditherLum)));
+            		output = lerp(_BG, output, ramp);
+            		// float3 output = lerp(_BG, sourceColor, ramp); // No thresholding
             	#endif
 
 				return float4(output, 1.0f);

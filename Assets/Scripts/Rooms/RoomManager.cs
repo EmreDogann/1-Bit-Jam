@@ -15,12 +15,19 @@ using UnityEditor;
 
 namespace Rooms
 {
+    public enum InitRoomLoadType
+    {
+        None,
+        StartingRoom,
+        RoomContainingPlayer
+    }
+
     public class RoomManager : MonoBehaviour
     {
         [SerializeField] private float roomLoadWaitTime;
 
         [Separator("Room Settings")]
-        [SerializeField] private bool loadStartingRoomOnAwake;
+        [SerializeField] private InitRoomLoadType loadRoomType;
         [SerializeField] private RoomType startingRoom;
         [SerializeField] private RoomType startingRoomEnteringFrom;
 
@@ -92,18 +99,28 @@ namespace Rooms
                 return;
             }
 
-            currentRoom = loadStartingRoomOnAwake
-                ? GetRoom(startingRoom)
-                : GetRoomAtPoint(player.transform.position);
+            switch (loadRoomType)
+            {
+                case InitRoomLoadType.None:
+                    break;
+                case InitRoomLoadType.StartingRoom:
+                    currentRoom = GetRoom(startingRoom);
+                    break;
+                case InitRoomLoadType.RoomContainingPlayer:
+                    currentRoom = GetRoomAtPoint(player.transform.position);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
-            if (currentRoom == null)
+            if (loadRoomType != InitRoomLoadType.None && currentRoom == null)
             {
                 Debug.LogError("Room Manager Error: Initial room not found. Maybe player is out of bounds?");
             }
             else
             {
                 currentRoom.SetRoomLogging(roomLogging);
-                currentRoom.ActivateRoom(startingRoomEnteringFrom, loadStartingRoomOnAwake);
+                currentRoom.ActivateRoom(startingRoomEnteringFrom, loadRoomType == InitRoomLoadType.StartingRoom);
                 PlayDoorAmbiances(currentRoom.Doors());
             }
         }
@@ -288,7 +305,7 @@ namespace Rooms
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            _roomTypeToRoomConfig = LoadAllRooms();
+            EditorApplication.delayCall += () => { _roomTypeToRoomConfig = LoadAllRooms(); };
         }
 
         private static SerializedDictionary<RoomType, RoomConfig> LoadAllRooms()

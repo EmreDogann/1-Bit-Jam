@@ -14,11 +14,10 @@ public class Footsteps : MonoBehaviour
     [Separator("Camera")]
     public bool shakeCameraOnStep;
     [ConditionalField(nameof(shakeCameraOnStep))]
-    [SerializeField] private GuidReference impulseListener_GUIDRef;
-    private CinemachineIndependentImpulseListener impulseListener;
+    [SerializeField] private CinemachineIndependentImpulseListener impulseListener;
 
-    [ConditionalField(nameof(shakeCameraOnStep))] [SerializeField] private CinemachineImpulseSource impulseSource;
-    [ConditionalField(nameof(shakeCameraOnStep))] [SerializeField] private ScreenShakeProfile screenShakeProfile;
+    [SerializeField] private CinemachineImpulseSource impulseSource;
+    [SerializeField] private ScreenShakeProfile screenShakeProfile;
 
     [Separator("Water Interaction Settings")]
     [SerializeField] private GameObject footstepMesh;
@@ -30,35 +29,12 @@ public class Footsteps : MonoBehaviour
 
     private void Awake()
     {
-        if (footstepMesh != null)
+        if (footstepMesh)
         {
             footstepMesh.SetActive(false);
             _footstepMaterial = footstepMesh.GetComponent<MeshRenderer>().sharedMaterial;
             _footstepMaterial.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
         }
-
-        if (impulseListener_GUIDRef.gameObject != null)
-        {
-            CinemachineIndependentImpulseListener component = impulseListener_GUIDRef.gameObject
-                .GetComponent<CinemachineIndependentImpulseListener>();
-            if (component != null)
-            {
-                impulseListener = component;
-            }
-        }
-
-
-        impulseListener_GUIDRef.OnGuidRemoved += ImpulseListener_GUIDRefOnOnGuidRemoved;
-    }
-
-    private void OnDestroy()
-    {
-        impulseListener_GUIDRef.OnGuidRemoved -= ImpulseListener_GUIDRefOnOnGuidRemoved;
-    }
-
-    private void ImpulseListener_GUIDRefOnOnGuidRemoved()
-    {
-        impulseListener = null;
     }
 
     private void OnFootstep()
@@ -95,33 +71,22 @@ public class Footsteps : MonoBehaviour
 
                 if (shakeCameraOnStep && screenShakeProfile && impulseSource)
                 {
-                    if (impulseListener_GUIDRef.gameObject != null)
+                    if (impulseListener)
                     {
-                        CinemachineIndependentImpulseListener component = impulseListener_GUIDRef.gameObject
-                            .GetComponent<CinemachineIndependentImpulseListener>();
-                        if (component != null)
-                        {
-                            impulseListener = component;
-                        }
-                        else
-                        {
-                            return;
-                        }
+                        impulseSource.m_ImpulseDefinition.m_ImpulseDuration = screenShakeProfile.impactTime;
+                        impulseSource.m_DefaultVelocity = screenShakeProfile.defaultVelocity;
+                        impulseListener.m_ReactionSettings.m_AmplitudeGain = screenShakeProfile.listenerAmplitude;
+                        impulseListener.m_ReactionSettings.m_FrequencyGain = screenShakeProfile.listenerFrequency;
+                        impulseListener.m_ReactionSettings.m_Duration = screenShakeProfile.listenerDuration;
+
+                        impulseSource.GenerateImpulseAtPositionWithVelocity(transform.position,
+                            screenShakeProfile.defaultVelocity * screenShakeProfile.impactForce);
                     }
-
-                    impulseSource.m_ImpulseDefinition.m_ImpulseDuration = screenShakeProfile.impactTime;
-                    impulseSource.m_DefaultVelocity = screenShakeProfile.defaultVelocity;
-                    impulseListener.m_ReactionSettings.m_AmplitudeGain = screenShakeProfile.listenerAmplitude;
-                    impulseListener.m_ReactionSettings.m_FrequencyGain = screenShakeProfile.listenerFrequency;
-                    impulseListener.m_ReactionSettings.m_Duration = screenShakeProfile.listenerDuration;
-
-                    impulseSource.GenerateImpulseAtPositionWithVelocity(transform.position,
-                        screenShakeProfile.defaultVelocity * screenShakeProfile.impactForce);
                 }
             }
         }
 
-        if (footstepMesh != null)
+        if (footstepMesh)
         {
             if (_coroutine != null)
             {

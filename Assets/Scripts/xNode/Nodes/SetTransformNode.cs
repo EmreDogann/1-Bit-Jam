@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace xNode.Nodes
 {
-    [NodeWidth(300)]
+    [NodeWidth(400)]
     [CreateNodeMenu("Actions/Set To Transform")]
     public class SetTransformNode : BaseNode
     {

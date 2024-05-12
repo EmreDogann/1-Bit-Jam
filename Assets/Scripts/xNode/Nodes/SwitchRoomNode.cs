@@ -5,17 +5,21 @@ using UnityEngine;
 
 namespace xNode.Nodes
 {
-    [NodeWidth(300)]
+    [NodeWidth(400)]
     [CreateNodeMenu("Actions/Switch Room")]
     public class SwitchRoomNode : BaseNode
     {
         [NodeEnum] [SerializeField] private RoomType roomType;
-        [SerializeField] private RoomManager roomManager;
+        [SerializeField] private GuidReference<RoomManager> roomManager;
         [SerializeField] private float transitionTime = -1.0f;
 
         public override void Execute()
         {
-            roomManager.SwitchRoom(roomType, transitionTime);
+            if (roomManager.Component)
+            {
+                roomManager.Component.SwitchRoom(roomType, transitionTime);
+            }
+
             NextNode("exit");
         }
     }
