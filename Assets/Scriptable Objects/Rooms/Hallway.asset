@@ -19,7 +19,5 @@ MonoBehaviour:
     useOriginalAudioVolume: 0
     connectingRoomVolume: 0
   owningScene:
-    Scene: {fileID: 102900000, guid: e700050cec61c40468fa494ef6dcacf6, type: 3}
-    SceneName: Hallway
-    sceneIndex: 2
-    sceneEnabled: 1
+    sceneAsset: {fileID: 102900000, guid: e700050cec61c40468fa494ef6dcacf6, type: 3}
+    guid: e700050cec61c40468fa494ef6dcacf6

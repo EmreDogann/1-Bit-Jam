@@ -19,6 +19,7 @@ namespace Rooms.Editor
         private SerializedProperty _loadRoomTypeProp;
 
         private SerializedProperty _roomsProp;
+        private SerializedProperty _roomConfigsProp;
         private SerializedProperty _currentRoomProp;
 
         private int _selectedIndex;
@@ -37,6 +38,7 @@ namespace Rooms.Editor
             _loadRoomTypeProp = serializedObject.FindProperty("loadRoomType");
 
             _roomsProp = serializedObject.FindProperty("rooms");
+            _roomConfigsProp = serializedObject.FindProperty("roomConfigs");
             _currentRoomProp = serializedObject.FindProperty("currentRoom");
 
             (_availableOptions, _availableOptionsNicified) =
@@ -96,7 +98,7 @@ namespace Rooms.Editor
 
             EditorGUILayout.Space(EditorGUIUtility.singleLineHeight);
 
-            EditorGUILayout.PropertyField(_roomsProp);
+            EditorGUILayout.PropertyField(_roomConfigsProp);
             EditorGUI.BeginDisabledGroup(true);
             EditorGUILayout.PropertyField(_currentRoomProp);
             EditorGUI.BeginDisabledGroup(false);

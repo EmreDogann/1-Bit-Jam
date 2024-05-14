@@ -19,7 +19,5 @@ MonoBehaviour:
     useOriginalAudioVolume: 0
     connectingRoomVolume: 0
   owningScene:
-    Scene: {fileID: 102900000, guid: b64401a04be0db54cb73d474d8534565, type: 3}
-    SceneName: Crew Quarters
-    sceneIndex: 5
-    sceneEnabled: 1
+    sceneAsset: {fileID: 102900000, guid: b64401a04be0db54cb73d474d8534565, type: 3}
+    guid: b64401a04be0db54cb73d474d8534565

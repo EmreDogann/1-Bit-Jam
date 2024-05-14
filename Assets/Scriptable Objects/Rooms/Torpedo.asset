@@ -19,7 +19,5 @@ MonoBehaviour:
     useOriginalAudioVolume: 0
     connectingRoomVolume: 0
   owningScene:
-    Scene: {fileID: 102900000, guid: ddce997e8d8e05a4b97a1ffd92e40160, type: 3}
-    SceneName: Torpedo
-    sceneIndex: 6
-    sceneEnabled: 1
+    sceneAsset: {fileID: 102900000, guid: ddce997e8d8e05a4b97a1ffd92e40160, type: 3}
+    guid: ddce997e8d8e05a4b97a1ffd92e40160

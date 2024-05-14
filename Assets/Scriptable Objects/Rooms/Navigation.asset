@@ -19,7 +19,5 @@ MonoBehaviour:
     useOriginalAudioVolume: 0
     connectingRoomVolume: 0
   owningScene:
-    Scene: {fileID: 102900000, guid: 80f9dba632f9d6d4ab8ac9f0986d47c3, type: 3}
-    SceneName: Navigation
-    sceneIndex: 3
-    sceneEnabled: 1
+    sceneAsset: {fileID: 102900000, guid: 80f9dba632f9d6d4ab8ac9f0986d47c3, type: 3}
+    guid: 80f9dba632f9d6d4ab8ac9f0986d47c3

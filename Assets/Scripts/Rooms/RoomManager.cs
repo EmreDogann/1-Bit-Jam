@@ -34,6 +34,7 @@ namespace Rooms
         [SerializeField] private bool roomLogging;
 
         [SerializeField] private List<Room> rooms;
+        [SerializeField] private List<RoomConfig> roomConfigs;
         [ReadOnly] [SerializeField] private Room currentRoom;
 
         private SerializedDictionary<RoomType, RoomConfig> _roomTypeToRoomConfig;

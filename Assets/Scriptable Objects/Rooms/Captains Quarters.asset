@@ -19,7 +19,5 @@ MonoBehaviour:
     useOriginalAudioVolume: 0
     connectingRoomVolume: 0
   owningScene:
-    Scene: {fileID: 102900000, guid: 40e3c5061fb9f7a4cadebb431004993a, type: 3}
-    SceneName: Captains Quarters
-    sceneIndex: 4
-    sceneEnabled: 1
+    sceneAsset: {fileID: 102900000, guid: 40e3c5061fb9f7a4cadebb431004993a, type: 3}
+    guid: 40e3c5061fb9f7a4cadebb431004993a

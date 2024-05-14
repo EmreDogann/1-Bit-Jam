@@ -23,7 +23,5 @@ MonoBehaviour:
     useOriginalAudioVolume: 0
     connectingRoomVolume: 0.05
   owningScene:
-    Scene: {fileID: 102900000, guid: 9315c92ca7c72214f8c2fb2b2aba0237, type: 3}
-    SceneName: Engine
-    sceneIndex: -1
-    sceneEnabled: 1
+    sceneAsset: {fileID: 102900000, guid: 9315c92ca7c72214f8c2fb2b2aba0237, type: 3}
+    guid: 9315c92ca7c72214f8c2fb2b2aba0237

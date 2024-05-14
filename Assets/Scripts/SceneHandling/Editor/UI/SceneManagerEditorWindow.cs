@@ -128,7 +128,7 @@ namespace SceneHandling.Editor.UI
                             if (_selectedSceneDependencies.Count == 0)
                             {
                                 Debug.LogWarning(
-                                    $"Could not find any dependencies for {typeof(ManagedScene).Name}: {managedSceneTemplate.managedScene.Name}");
+                                    $"Could not find any dependencies for {typeof(ManagedScene).Name}: {managedSceneTemplate.managedScene.SceneName}");
                             }
 
                             _sceneReferenceDependenciesListView.itemsSource = _selectedSceneDependencies;

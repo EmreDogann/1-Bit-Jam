@@ -787,12 +787,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scene: {fileID: 0}
-  managedScene:
-    sceneAsset: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05, type: 3}
-    guid: 99c9720ab356a0642a771bea13969a05
+  managedScene: {sceneAsset: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05,
+      type: 3}, guid: 99c9720ab356a0642a771bea13969a05}
   managedSceneList:
-  - sceneAsset: {fileID: 0}
-    guid: 
+  - {sceneAsset: {fileID: 0}, guid: }
 --- !u!114 &290392426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1573,9 +1571,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scene: {fileID: 0}
-  managedScene:
-    sceneAsset: {fileID: 102900000, guid: 0f10524847f1010438443946b7d7a61d, type: 3}
-    guid: 0f10524847f1010438443946b7d7a61d
+  managedScene: {sceneAsset: {fileID: 102900000, guid: 0f10524847f1010438443946b7d7a61d,
+      type: 3}, guid: 0f10524847f1010438443946b7d7a61d}
   managedSceneList: []
 --- !u!1 &798827824
 GameObject:
@@ -3841,6 +3838,13 @@ MonoBehaviour:
   startingRoomEnteringFrom: 0
   roomLogging: 1
   rooms: []
+  roomConfigs:
+  - {fileID: 11400000, guid: fed416f204a4ef54fa663a986a582f3c, type: 2}
+  - {fileID: 11400000, guid: dcba4a43e49aaf24a8c773d744bdaf6f, type: 2}
+  - {fileID: 11400000, guid: c136bf1151fd70648a3bd66f4aecdd90, type: 2}
+  - {fileID: 11400000, guid: 5fd9dfeb3c7a85f4eb1594333f90bfca, type: 2}
+  - {fileID: 11400000, guid: ce4ea70e9bbfe0e40be4494773e7c7a9, type: 2}
+  - {fileID: 11400000, guid: 12d43185db726cf4d819505a3de5e212, type: 2}
   currentRoom: {fileID: 0}
 --- !u!4 &1924647663
 Transform:

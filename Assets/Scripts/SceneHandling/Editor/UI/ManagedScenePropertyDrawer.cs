@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 using SceneHandling.Editor.Toolbox;
@@ -58,7 +59,14 @@ namespace SceneHandling.Editor.UI
             _sceneAssetProperty = property.FindPropertyRelative("sceneAsset");
             _guidProperty = property.FindPropertyRelative("guid");
 
-            if (_sceneAssetProperty == null)
+            SceneAsset sceneAsset = (SceneAsset)_sceneAssetProperty.objectReferenceValue;
+            if (sceneAsset)
+            {
+                _buildEntry = EditorBuildSettings.scenes
+                    .FirstOrDefault(scene => scene.guid.ToString().Equals(_guidProperty.stringValue));
+            }
+
+            if (!_sceneAssetProperty.objectReferenceValue)
             {
                 _bundlingState = SceneBundlingState.NoScene;
             }
@@ -99,10 +107,10 @@ namespace SceneHandling.Editor.UI
             const float buildSettingsWidth = 20f;
             const float padding = 2f;
 
-            Rect assetPos = position;
+            Rect assetPos = new Rect(position);
             assetPos.width -= buildSettingsWidth + padding;
 
-            Rect buildSettingsPos = position;
+            Rect buildSettingsPos = new Rect(position);
             buildSettingsPos.x += position.width - buildSettingsWidth + padding;
             buildSettingsPos.width = buildSettingsWidth;
 
@@ -112,10 +120,10 @@ namespace SceneHandling.Editor.UI
 
             EditorGUI.BeginChangeCheck();
             Object objectRef = EditorGUI.ObjectField(
-                _sceneAssetProperty.objectReferenceValue == null || property.hasMultipleDifferentValues
+                !_sceneAssetProperty.objectReferenceValue || property.hasMultipleDifferentValues
                     ? position
                     : assetPos,
-                new GUIContent(),
+                GUIContent.none,
                 _sceneAssetProperty.objectReferenceValue as SceneAsset,
                 typeof(SceneAsset), false);
 
@@ -123,7 +131,7 @@ namespace SceneHandling.Editor.UI
             {
                 _sceneAssetProperty.objectReferenceValue = objectRef;
 
-                if (objectRef == null)
+                if (!objectRef)
                 {
                     _guidProperty.stringValue = GuidUtils.AllZeroGuid;
                 }
@@ -148,84 +156,25 @@ namespace SceneHandling.Editor.UI
                 }
             }
 
-            // Event evt = Event.current;
-            // EventType eventType = evt.type;
-            //
-            // bool evaluateObjRef = false;
-            // switch (eventType)
-            // {
-            //     case EventType.ExecuteCommand:
-            //         if (evt.commandName.Equals("ObjectSelectorClosed") &&
-            //             _lastUsedControlIDGetter(null) == objectFieldID &&
-            //             // GUIUtility.keyboardControl == objectFieldID &&
-            //             (property == null ||
-            //              !_propertyIsScriptGetter(property)))
-            //         {
-            //             if (_objectSelectorInstanceIDGetter(null) != 0)
-            //             {
-            //                 evt.Use();
-            //
-            //                 if (!_cancelTriggered)
-            //                 {
-            //                     evaluateObjRef = true;
-            //                 }
-            //
-            //                 DestroySerializedObject(ref _sceneAssetSObject);
-            //                 _cancelTriggered = false;
-            //             }
-            //         }
-            //
-            //         if (evt.commandName.Equals("ObjectSelectorCanceled") &&
-            //             _lastUsedControlIDGetter(null) == objectFieldID &&
-            //             GUIUtility.keyboardControl == objectFieldID &&
-            //             (property == null ||
-            //              !_propertyIsScriptGetter(property)))
-            //         {
-            //             if (_objectSelectorInstanceIDGetter(null) != 0)
-            //             {
-            //                 // User canceled object selection; don't apply
-            //                 evt.Use();
-            //
-            //                 _cancelTriggered = true;
-            //             }
-            //         }
-            //
-            //         if (evt.commandName.Equals("ObjectSelectorSelectionDone") &&
-            //             _lastUsedControlIDGetter(null) == objectFieldID &&
-            //             GUIUtility.keyboardControl == objectFieldID)
-            //         {
-            //             evt.Use();
-            //
-            //             evaluateObjRef = true;
-            //             DestroySerializedObject(ref _sceneAssetSObject);
-            //         }
-            //
-            //         break;
-            //     case EventType.Used:
-            //         if (evt.commandName.Equals("ObjectSelectorUpdated") &&
-            //             _lastUsedControlIDGetter(null) == objectFieldID &&
-            //             GUIUtility.keyboardControl == objectFieldID)
-            //         {
-            //             evt.Use();
-            //
-            //             DestroySerializedObject(ref _sceneAssetSObject);
-            //             _sceneAssetSObject = new SerializedObject(objectRef);
-            //             _sceneAssetSObject.ApplyModifiedProperties();
-            //         }
-            //
-            //         break;
-            // }
-
-            if (_sceneAssetProperty.objectReferenceValue != null && !property.hasMultipleDifferentValues)
+            if (_sceneAssetProperty.objectReferenceValue && !property.hasMultipleDifferentValues)
             {
                 Color colorToRestore = GUI.color;
                 GUIContent settingsIcon = EditorGUIUtility.IconContent("SettingsIcon");
+                if (_bundlingState == SceneBundlingState.Nowhere)
+                {
+                    GUI.color = Color.red;
+                }
+                else if (_bundlingState == SceneBundlingState.InBuildDisabled)
+                {
+                    GUI.color = Color.yellow;
+                }
 
 // Backwards compatibility (https://github.com/starikcetin/Eflatun.SceneReference/issues/74)
 #if UNITY_2022_1_OR_NEWER
                 GUIStyle toolboxButtonStyle = EditorStyles.iconButton;
+                toolboxButtonStyle.contentOffset = new Vector2(0, 1);
 #else
-                var toolboxButtonStyle = EditorStyles.miniButton;
+                GUIStyle toolboxButtonStyle = EditorStyles.miniButton;
                 toolboxButtonStyle.padding = new RectOffset(1, 1, 1, 1);
 #endif
 
@@ -274,17 +223,28 @@ namespace SceneHandling.Editor.UI
 
             var tools = new List<ITool>();
 
+            GUIStyle titleStyle = new GUIStyle(EditorStyles.boldLabel);
+            titleStyle.alignment = TextAnchor.MiddleCenter;
+            GUIContent title = new GUIContent();
             if (_bundlingState == SceneBundlingState.Nowhere)
             {
+                title.text = "Scene is missing from build settings";
+                titleStyle.normal.textColor = Color.red;
+                titleStyle.hover.textColor = Color.red;
+
                 tools.Add(new AddToBuildTool(path, asset));
             }
 
             if (_bundlingState == SceneBundlingState.InBuildDisabled)
             {
+                title.text = "Scene is disabled in build settings";
+                titleStyle.normal.textColor = Color.yellow;
+                titleStyle.hover.textColor = Color.yellow;
+
                 tools.Add(new EnableInBuildTool(path, guid, asset));
             }
 
-            return new ToolboxPopupWindow(tools);
+            return new ToolboxPopupWindow(tools, title, titleStyle);
         }
 
         private bool IsAssetType<T>(Object obj) where T : class

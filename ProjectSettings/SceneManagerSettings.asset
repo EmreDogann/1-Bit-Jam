@@ -52,4 +52,20 @@ MonoBehaviour:
       guid: 99c9720ab356a0642a771bea13969a05
     - sceneAsset: {fileID: 102900000, guid: 0f10524847f1010438443946b7d7a61d, type: 3}
       guid: 0f10524847f1010438443946b7d7a61d
+    - sceneAsset: {fileID: 102900000, guid: 40e3c5061fb9f7a4cadebb431004993a, type: 3}
+      guid: 40e3c5061fb9f7a4cadebb431004993a
+    - sceneAsset: {fileID: 102900000, guid: b64401a04be0db54cb73d474d8534565, type: 3}
+      guid: b64401a04be0db54cb73d474d8534565
+    - sceneAsset: {fileID: 102900000, guid: bc55c1abd07bf4741b23a9a21eb128b1, type: 3}
+      guid: bc55c1abd07bf4741b23a9a21eb128b1
+    - sceneAsset: {fileID: 102900000, guid: 9315c92ca7c72214f8c2fb2b2aba0237, type: 3}
+      guid: 9315c92ca7c72214f8c2fb2b2aba0237
+    - sceneAsset: {fileID: 102900000, guid: e700050cec61c40468fa494ef6dcacf6, type: 3}
+      guid: e700050cec61c40468fa494ef6dcacf6
+    - sceneAsset: {fileID: 102900000, guid: 80f9dba632f9d6d4ab8ac9f0986d47c3, type: 3}
+      guid: 80f9dba632f9d6d4ab8ac9f0986d47c3
+    - sceneAsset: {fileID: 102900000, guid: ddce997e8d8e05a4b97a1ffd92e40160, type: 3}
+      guid: ddce997e8d8e05a4b97a1ffd92e40160
+  sceneGroups:
+    list: []
   settingsRootPath: Assets/Settings/Scene Manager

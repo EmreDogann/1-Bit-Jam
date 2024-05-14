@@ -88,7 +88,7 @@ namespace SceneHandling
         ///     Name of the scene asset. Without '.unity' extension.
         /// </summary>
         [IgnoreDataMember]
-        public string Name => Path.GetFileNameWithoutExtension(ScenePath);
+        public string SceneName => Path.GetFileNameWithoutExtension(ScenePath);
 
         /// <summary>
         ///     Creates a new <see cref="ManagedScene" /> which references the scene that has the given GUID.

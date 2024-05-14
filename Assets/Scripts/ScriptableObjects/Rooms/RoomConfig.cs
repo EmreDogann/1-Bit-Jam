@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Audio;
 using MyBox;
+using SceneHandling;
 using UnityEngine;
 
 namespace ScriptableObjects.Rooms
@@ -30,6 +31,6 @@ namespace ScriptableObjects.Rooms
     {
         public RoomType roomType;
         public List<RoomAmbience> roomAmbiences;
-        public SceneReference owningScene;
+        public ManagedScene owningScene;
     }
 }
