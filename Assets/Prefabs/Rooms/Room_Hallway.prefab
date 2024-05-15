@@ -1209,7 +1209,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomConfig: {fileID: 11400000, guid: 5fd9dfeb3c7a85f4eb1594333f90bfca, type: 2}
-  lightFadeDuration: 0.5
   <LightsOn>k__BackingField: 1
   cameraBounds: {fileID: 8370121100718409622}
   roomDoors:
@@ -4986,6 +4985,12 @@ PrefabInstance:
       propertyPath: connectingRoom
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 2687446678122933772, guid: 303f159a3e9295844b8c141f9f1411a0,
+        type: 3}
+      propertyPath: connectingRoomConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: 12d43185db726cf4d819505a3de5e212,
+        type: 2}
     - target: {fileID: 3567890794709096586, guid: 303f159a3e9295844b8c141f9f1411a0,
         type: 3}
       propertyPath: m_Name
@@ -5119,6 +5124,12 @@ PrefabInstance:
       propertyPath: inspectMessage
       value: The wheel is missing...
       objectReference: {fileID: 0}
+    - target: {fileID: 2687446678122933772, guid: 303f159a3e9295844b8c141f9f1411a0,
+        type: 3}
+      propertyPath: connectingRoomConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: dcba4a43e49aaf24a8c773d744bdaf6f,
+        type: 2}
     - target: {fileID: 3567890794709096586, guid: 303f159a3e9295844b8c141f9f1411a0,
         type: 3}
       propertyPath: m_Name
@@ -5555,6 +5566,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2687446678122933772, guid: 303f159a3e9295844b8c141f9f1411a0,
         type: 3}
+      propertyPath: connectingRoomConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: c136bf1151fd70648a3bd66f4aecdd90,
+        type: 2}
+    - target: {fileID: 2687446678122933772, guid: 303f159a3e9295844b8c141f9f1411a0,
+        type: 3}
       propertyPath: <PlayConnectingRoomAmbience>k__BackingField
       value: 1
       objectReference: {fileID: 0}
@@ -5680,6 +5697,12 @@ PrefabInstance:
       propertyPath: connectingRoom
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 2687446678122933772, guid: 303f159a3e9295844b8c141f9f1411a0,
+        type: 3}
+      propertyPath: connectingRoomConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: ce4ea70e9bbfe0e40be4494773e7c7a9,
+        type: 2}
     - target: {fileID: 3567890794709096586, guid: 303f159a3e9295844b8c141f9f1411a0,
         type: 3}
       propertyPath: m_Name

@@ -74,7 +74,7 @@ namespace Capabilities
             }
         }
 
-        private void OnRoomSwitching(RoomType roomType, float transitionTime, Action callback)
+        private void OnRoomSwitching(RoomConfig roomConfig, float transitionTime, Action callback)
         {
             _interactionActive = false;
         }

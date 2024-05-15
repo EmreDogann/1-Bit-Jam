@@ -363,7 +363,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomConfig: {fileID: 11400000, guid: c136bf1151fd70648a3bd66f4aecdd90, type: 2}
-  lightFadeDuration: 0.5
   <LightsOn>k__BackingField: 1
   cameraBounds: {fileID: 8034907003481865277}
   roomDoors:
@@ -3520,6 +3519,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2687446678122933772, guid: 303f159a3e9295844b8c141f9f1411a0,
+        type: 3}
+      propertyPath: connectingRoomConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: 5fd9dfeb3c7a85f4eb1594333f90bfca,
+        type: 2}
     - target: {fileID: 2687446678122933772, guid: 303f159a3e9295844b8c141f9f1411a0,
         type: 3}
       propertyPath: missingHandleInspectView

@@ -548,7 +548,7 @@ Transform:
   m_GameObject: {fileID: 147622448}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 148.49525, y: 6.5775948, z: -19.1}
+  m_LocalPosition: {x: 36.51191, y: 6.5684304, z: -19.002775}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -567,8 +567,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f453f694addf4275988fac205bc91968, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_BoundingShape2D: {fileID: 8034907003481865277, guid: 2478209f45b2a6e45aff0975ea873352,
-    type: 3}
+  m_BoundingShape2D: {fileID: 0}
   m_Damping: 0
   m_MaxWindowSize: 0
 --- !u!114 &147622453
@@ -742,55 +741,6 @@ MonoBehaviour:
   itemPrefabs:
   - {fileID: 3229440970882805500, guid: 856ae4877cfce244aa2eecbb0d4e270b, type: 3}
   - {fileID: 1655396749491092965, guid: b05857f3b2542bd4f99340e7c6ae9d8c, type: 3}
---- !u!1 &284565541
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 284565542}
-  - component: {fileID: 284565543}
-  m_Layer: 0
-  m_Name: Test
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &284565542
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 284565541}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1324598681}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &284565543
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 284565541}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2eb0c7fade4fe5d44bb3ce74e493c8d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scene: {fileID: 0}
-  managedScene: {sceneAsset: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05,
-      type: 3}, guid: 99c9720ab356a0642a771bea13969a05}
-  managedSceneList:
-  - {sceneAsset: {fileID: 0}, guid: }
 --- !u!114 &290392426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -886,7 +836,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 146.27435, y: 6.57759, z: -19.1}
+  m_LocalPosition: {x: 36.51191, y: 6.5684304, z: -19.002775}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1526,54 +1476,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1723302013}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &733992452
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 733992453}
-  - component: {fileID: 733992454}
-  m_Layer: 0
-  m_Name: Test_1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &733992453
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 733992452}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1324598681}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &733992454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 733992452}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2eb0c7fade4fe5d44bb3ce74e493c8d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scene: {fileID: 0}
-  managedScene: {sceneAsset: {fileID: 102900000, guid: 0f10524847f1010438443946b7d7a61d,
-      type: 3}, guid: 0f10524847f1010438443946b7d7a61d}
-  managedSceneList: []
 --- !u!1 &798827824
 GameObject:
   m_ObjectHideFlags: 0
@@ -2052,39 +1954,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Asset: {fileID: -944628639613478452, guid: d1a6d78b473c6914a8ba71719a82c98d, type: 3}
   m_ActionId: 71d61e14-202f-48db-9a53-c4c0bf3e712d
---- !u!1 &1324598679
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1324598681}
-  m_Layer: 0
-  m_Name: '[EDITOR ONLY]'
-  m_TagString: EditorOnly
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1324598681
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1324598679}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 284565542}
-  - {fileID: 733992453}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1440051791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3363,7 +3232,7 @@ Transform:
   m_GameObject: {fileID: 1723301996}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 145.49525, y: 1.6421609, z: 5.500001}
+  m_LocalPosition: {x: 33.51191, y: 1.6329966, z: 5.597224}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3834,8 +3703,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomLoadWaitTime: 0.7
   loadRoomType: 1
-  startingRoom: 1
-  startingRoomEnteringFrom: 0
+  startingRoom: {fileID: 11400000, guid: dcba4a43e49aaf24a8c773d744bdaf6f, type: 2}
+  startingRoomEnteringFrom: {fileID: 11400000, guid: 5fd9dfeb3c7a85f4eb1594333f90bfca,
+    type: 2}
   roomLogging: 1
   rooms: []
   roomConfigs:
@@ -3846,6 +3716,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ce4ea70e9bbfe0e40be4494773e7c7a9, type: 2}
   - {fileID: 11400000, guid: 12d43185db726cf4d819505a3de5e212, type: 2}
   currentRoom: {fileID: 0}
+  currentRoomConfig: {fileID: 0}
 --- !u!4 &1924647663
 Transform:
   m_ObjectHideFlags: 0
@@ -6533,4 +6404,3 @@ SceneRoots:
   - {fileID: 1575304217}
   - {fileID: 1723302013}
   - {fileID: 147622450}
-  - {fileID: 1324598681}

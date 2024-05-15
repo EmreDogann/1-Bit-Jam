@@ -27,7 +27,7 @@ namespace Rooms
         [SerializeField] private RoomConfig roomConfig;
 
         [Separator("Lights")]
-        [SerializeField] private float lightFadeDuration = 1.0f;
+        [SerializeField] private readonly float lightFadeDuration = 1.0f;
         [field: SerializeReference] public bool LightsOn { get; private set; } = true;
 
         [Separator("Runtime Room Data")]
@@ -203,7 +203,7 @@ namespace Rooms
             return _roomBounds.bounds.Contains(point);
         }
 
-        public void PrepareRoom(RoomType exitingRoom)
+        public void PrepareRoom(RoomConfig exitingRoom)
         {
             TriggerRoomLogging(RoomLoggingState.Prepare, false);
 
@@ -213,23 +213,34 @@ namespace Rooms
                 controlLight.TurnOffLight();
             }
 
-            foreach (Door door in roomDoors)
+            Door selectedDoor = null;
+            if (exitingRoom)
             {
-                if (door.GetConnectingRoom() != exitingRoom)
+                foreach (Door door in roomDoors)
                 {
-                    continue;
-                }
+                    if (door.GetConnectingRoom() != exitingRoom.roomType)
+                    {
+                        continue;
+                    }
 
-                OnRoomPrepare?.Invoke(new RoomData
-                {
-                    RoomPath = roomPath,
-                    PathIndex = NearestSplineIndex(door.GetSpawnPoint().position),
-                    StartingPosition = door.GetSpawnPoint(),
-                    LightFadeDuration = lightFadeDuration,
-                    CameraBounds = cameraBounds
-                });
-                break;
+                    selectedDoor = door;
+
+                    break;
+                }
             }
+            else
+            {
+                selectedDoor = roomDoors[0];
+            }
+
+            OnRoomPrepare?.Invoke(new RoomData
+            {
+                RoomPath = roomPath,
+                PathIndex = NearestSplineIndex(selectedDoor.GetSpawnPoint().position),
+                StartingPosition = selectedDoor.GetSpawnPoint(),
+                LightFadeDuration = lightFadeDuration,
+                CameraBounds = cameraBounds
+            });
 
             TriggerRoomLogging(RoomLoggingState.Prepare, true);
         }
@@ -280,7 +291,7 @@ namespace Rooms
             TriggerRoomLogging(RoomLoggingState.Activate, true);
         }
 
-        public void ActivateRoom(RoomType exitingRoom, bool setPlayerPosition = true)
+        public void ActivateRoom(RoomConfig exitingRoom, bool setPlayerPosition = true)
         {
             TriggerRoomLogging(RoomLoggingState.Activate, false);
 
@@ -295,25 +306,35 @@ namespace Rooms
                 OnLightsSwitch?.Invoke(true, lightFadeDuration);
             }
 
-            foreach (Door door in roomDoors)
+            Door selectedDoor = null;
+            if (exitingRoom)
             {
-                if (door.GetConnectingRoom() != exitingRoom)
+                foreach (Door door in roomDoors)
                 {
-                    continue;
+                    if (door.GetConnectingRoom() != exitingRoom.roomType)
+                    {
+                        continue;
+                    }
+
+                    door.PlayClosingAudio();
+                    selectedDoor = door;
+
+                    break;
                 }
-
-                door.PlayClosingAudio();
-
-                OnRoomActivate?.Invoke(new RoomData
-                {
-                    RoomPath = roomPath,
-                    PathIndex = setPlayerPosition ? NearestSplineIndex(door.GetSpawnPoint().position) : 0,
-                    StartingPosition = setPlayerPosition ? door.GetSpawnPoint() : null,
-                    LightFadeDuration = lightFadeDuration,
-                    CameraBounds = cameraBounds
-                });
-                break;
             }
+            else
+            {
+                selectedDoor = roomDoors[0];
+            }
+
+            OnRoomActivate?.Invoke(new RoomData
+            {
+                RoomPath = roomPath,
+                PathIndex = setPlayerPosition ? NearestSplineIndex(selectedDoor.GetSpawnPoint().position) : 0,
+                StartingPosition = setPlayerPosition ? selectedDoor.GetSpawnPoint() : null,
+                LightFadeDuration = lightFadeDuration,
+                CameraBounds = cameraBounds
+            });
 
             foreach (RoomAmbience roomAmbience in roomConfig.roomAmbiences)
             {

@@ -9,7 +9,7 @@ namespace xNode.Nodes
     [CreateNodeMenu("Actions/Switch Room")]
     public class SwitchRoomNode : BaseNode
     {
-        [NodeEnum] [SerializeField] private RoomType roomType;
+        [NodeEnum] [SerializeField] private RoomConfig roomConfig;
         [SerializeField] private GuidReference<RoomManager> roomManager;
         [SerializeField] private float transitionTime = -1.0f;
 
@@ -17,7 +17,7 @@ namespace xNode.Nodes
         {
             if (roomManager.Component)
             {
-                roomManager.Component.SwitchRoom(roomType, transitionTime);
+                roomManager.Component.SwitchRoom(roomConfig, transitionTime);
             }
 
             NextNode("exit");

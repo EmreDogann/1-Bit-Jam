@@ -3,6 +3,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using SceneHandling.Utility;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -21,6 +22,8 @@ namespace SceneHandling
     {
         [SerializeField] private Object sceneAsset;
         [SerializeField] private string guid = GuidUtils.AllZeroGuid;
+
+        private Scene _runtimeScene;
 
 #if UNITY_EDITOR
         /// <summary>
@@ -81,6 +84,55 @@ namespace SceneHandling
                 }
 
                 return pathFromMap;
+            }
+        }
+
+        /// <summary>
+        ///     Checks if the scene referenced in this ManagedScene if currently loaded.
+        ///     <returns> True is the scene is loaded, False otherwise.</returns>
+        /// </summary>
+        [IgnoreDataMember]
+        public bool IsLoaded
+        {
+            get
+            {
+                var scene = RuntimeScene;
+                return scene.HasValue && scene.Value.isLoaded;
+            }
+        }
+
+        /// <summary>
+        ///     Returns the runtime scene instance of the scene referenced by ManagedScene. Will return null if the scene is not currently loaded.
+        /// </summary>
+        [IgnoreDataMember]
+        public Scene? RuntimeScene
+        {
+            get
+            {
+                if (_runtimeScene != null && _runtimeScene.IsValid())
+                {
+                    return _runtimeScene;
+                }
+
+                Scene scene = UnityEngine.SceneManagement.SceneManager.GetSceneByPath(ScenePath);
+                if (!scene.IsValid())
+                {
+                    return null;
+                }
+
+                _runtimeScene = scene;
+                return _runtimeScene;
+            }
+            set
+            {
+                if (value.HasValue && value.Value.IsValid())
+                {
+                    _runtimeScene = value.Value;
+                }
+                else
+                {
+                    Debug.LogError("Value of new RuntimeScene cannot be null or an invalid scene!");
+                }
             }
         }
 

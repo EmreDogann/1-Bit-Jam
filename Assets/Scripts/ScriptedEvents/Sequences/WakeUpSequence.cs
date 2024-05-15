@@ -14,7 +14,7 @@ namespace ScriptedEvents.Sequences
         // Move the player into position, play Ship explosion noise, play alarm, play low oxygen voice, fade to normal.
         [ConditionalField(nameof(triggerOnAwake))] [SerializeField] private float triggerDelay;
         [SerializeField] private RoomManager roomManager;
-        [SerializeField] private RoomType startingRoom;
+        [SerializeField] private RoomConfig startingRoom;
 
         [Separator("Transforms")]
         [SerializeField] private Transform playerTransform;
@@ -38,7 +38,7 @@ namespace ScriptedEvents.Sequences
         private void Start()
         {
             // Initialize starting room
-            roomManager.GetRoom(startingRoom).ControlLights(false, 0.0f);
+            // roomManager.GetRoom(startingRoom).ControlLights(false, 0.0f);
 
             _wakeUpSequence = DOTween.Sequence();
             _wakeUpSequence

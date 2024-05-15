@@ -5,12 +5,14 @@ using AYellowpaper.SerializedCollections;
 using Interactables;
 using Lights;
 using MyBox;
-using SceneHandling;
 using ScriptableObjects.Rooms;
-using UnityEngine;
-using Utils;
-#if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using Utils;
+using SceneManager = SceneHandling.SceneManager;
+#if UNITY_EDITOR
 #endif
 
 namespace Rooms
@@ -28,14 +30,15 @@ namespace Rooms
 
         [Separator("Room Settings")]
         [SerializeField] private InitRoomLoadType loadRoomType;
-        [SerializeField] private RoomType startingRoom;
-        [SerializeField] private RoomType startingRoomEnteringFrom;
+        [SerializeField] private RoomConfig startingRoom;
+        [SerializeField] private RoomConfig startingRoomEnteringFrom;
 
         [SerializeField] private bool roomLogging;
 
         [SerializeField] private List<Room> rooms;
         [SerializeField] private List<RoomConfig> roomConfigs;
         [ReadOnly] [SerializeField] private Room currentRoom;
+        [ReadOnly] [SerializeField] private RoomConfig currentRoomConfig;
 
         private SerializedDictionary<RoomType, RoomConfig> _roomTypeToRoomConfig;
         private bool _switchingInProgress;
@@ -88,41 +91,40 @@ namespace Rooms
 
         private void Start()
         {
-            if (currentRoom != null || _switchingInProgress)
+            if (currentRoomConfig || _switchingInProgress)
             {
                 return;
             }
 
             GameObject player = GameState.Instance.GetPlayer;
-            if (player == null)
+            if (!player)
             {
                 Debug.LogError("ERROR: PlayerToRoom(): Player reference not found in GameState!");
                 return;
             }
 
+            RoomConfig startingRoomConfig = null;
             switch (loadRoomType)
             {
                 case InitRoomLoadType.None:
                     break;
                 case InitRoomLoadType.StartingRoom:
-                    currentRoom = GetRoom(startingRoom);
+                    startingRoomConfig = startingRoom;
                     break;
                 case InitRoomLoadType.RoomContainingPlayer:
-                    currentRoom = GetRoomAtPoint(player.transform.position);
+                    // startingRoomConfig = GetRoomAtPoint(player.transform.position);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (loadRoomType != InitRoomLoadType.None && currentRoom == null)
+            if (loadRoomType != InitRoomLoadType.None && !startingRoomConfig)
             {
-                Debug.LogError("Room Manager Error: Initial room not found. Maybe player is out of bounds?");
+                Debug.LogError("Room Manager Error: Initial room not found.");
             }
             else
             {
-                currentRoom.SetRoomLogging(roomLogging);
-                currentRoom.ActivateRoom(startingRoomEnteringFrom, loadRoomType == InitRoomLoadType.StartingRoom);
-                PlayDoorAmbiances(currentRoom.Doors());
+                SwitchRoom(startingRoomConfig);
             }
         }
 
@@ -145,6 +147,11 @@ namespace Rooms
             return rooms.Find(x => x.RoomType() == roomType);
         }
 
+        public RoomConfig GetRoomConfig(RoomType roomType)
+        {
+            return roomConfigs.Find(x => x.roomType == roomType);
+        }
+
         public Room GetRoomAtPoint(Vector3 point)
         {
             return rooms.Find(x => x.ContainsPoint(point));
@@ -152,7 +159,7 @@ namespace Rooms
 
         private void OnLightStateChange(LightData data)
         {
-            if (currentRoom != null)
+            if (currentRoom)
             {
                 currentRoom.ControlLightState(data.State);
             }
@@ -171,85 +178,104 @@ namespace Rooms
             }
         }
 
-        public void SwitchRoom(RoomType roomType, float transitionWaitTime = -1.0f, Action roomSwitchedCallback = null)
+        public void SwitchRoom(RoomConfig roomConfig, float transitionWaitTime = -1.0f,
+            Action roomSwitchedCallback = null)
         {
-            StartCoroutine(TransitionRooms(roomType, transitionWaitTime, roomSwitchedCallback));
+            StartCoroutine(TransitionRooms(roomConfig, transitionWaitTime, roomSwitchedCallback));
         }
 
         private IEnumerator WaitForRoomLoad(RoomType roomType, Ref<Room> targetRoom)
         {
             _roomTypeToRoomConfig.TryGetValue(roomType, out RoomConfig roomConfig);
+            yield return WaitForRoomLoad(roomConfig, targetRoom);
+        }
 
+        private IEnumerator WaitForRoomLoad(RoomConfig roomConfig, Ref<Room> targetRoom)
+        {
             bool isLoadFinished = false;
-            if (roomConfig != null && roomConfig.owningScene != null)
+            if (roomConfig && roomConfig.owningScene != null)
             {
                 SceneManager.LoadSceneAsync(roomConfig.owningScene.SceneName, false,
                     _ => isLoadFinished = true);
             }
 
-            Debug.Log("Waiting for room " + roomType + " to load...");
+            Debug.Log("Waiting for room " + roomConfig.roomType + " to load...");
 
             while (!isLoadFinished)
             {
                 yield return null;
             }
 
-            Debug.Log("Room " + roomType + " is loaded!");
+            Debug.Log("Room " + roomConfig.roomType + " is loaded!");
 
             targetRoom.Value = UnityEngine.SceneManagement.SceneManager.GetSceneByName(roomConfig.owningScene.SceneName)
                 .GetRootGameObjects()[0]
                 .GetComponent<Room>();
+
+            // Cache this runtime instance of room.
+            roomConfig.RuntimeRoom = targetRoom.Value;
         }
 
-        private IEnumerator TransitionRooms(RoomType newRoomType, float roomLoadWaitTimeOverride,
+        private IEnumerator TransitionRooms(RoomConfig newRoomConfig, float roomLoadWaitTimeOverride,
             Action roomSwitchedCallback)
         {
             _switchingInProgress = true;
-            string currentScene = currentRoom.gameObject.scene.path;
 
-            if (roomLogging)
+            if (currentRoomConfig && currentRoomConfig.RuntimeRoom)
             {
-                Debug.Log("Switching rooms: " + currentRoom.RoomType() + " -> " + newRoomType);
-            }
-
-            Room newRoom = null;
-            foreach (Room room in rooms)
-            {
-                if (room.RoomType() == newRoomType)
+                if (roomLogging)
                 {
-                    newRoom = room;
-                    break;
+                    Debug.Log("Switching rooms: " + currentRoom.RoomType() + " -> " + newRoomConfig.roomType);
                 }
+
+                yield return currentRoomConfig.RuntimeRoom.DeactivateRoom(newRoomConfig.roomType);
+
+                StopDoorAmbiances(currentRoomConfig.RuntimeRoom.Doors());
             }
 
-            yield return currentRoom.DeactivateRoom(newRoomType);
-
-            StopDoorAmbiances(currentRoom.Doors());
-
+            Room newRoom;
             // If target room cannot be found, load into memory and wait for it to be available.
-            if (newRoom == null)
+            if (!newRoomConfig.owningScene.IsLoaded)
             {
                 var loadedRoomRef = new Ref<Room>();
-                yield return WaitForRoomLoad(newRoomType, loadedRoomRef);
+                yield return WaitForRoomLoad(newRoomConfig, loadedRoomRef);
 
                 newRoom = loadedRoomRef.Value;
-                newRoom.SetRoomLogging(roomLogging);
+            }
+            else
+            {
+                if (!newRoomConfig.RuntimeRoom)
+                {
+                    newRoomConfig.RuntimeRoom = UnityEngine.SceneManagement.SceneManager
+                        .GetSceneByName(newRoomConfig.owningScene.SceneName)
+                        .GetRootGameObjects()[0]
+                        .GetComponent<Room>();
+                }
+
+                newRoom = newRoomConfig.RuntimeRoom;
             }
 
-            newRoom.PrepareRoom(currentRoom.RoomType());
+            newRoom.SetRoomLogging(roomLogging);
+
+            newRoom.PrepareRoom(currentRoomConfig);
 
             yield return new WaitForSecondsRealtime(roomLoadWaitTimeOverride > 0.0f
                 ? roomLoadWaitTimeOverride
                 : roomLoadWaitTime);
 
-            newRoom.ActivateRoom(currentRoom.RoomType());
+            newRoom.ActivateRoom(currentRoomConfig);
 
             PlayDoorAmbiances(newRoom.Doors());
 
-            roomSwitchedCallback?.Invoke();
-            currentRoom = newRoom;
+            if (currentRoomConfig)
+            {
+                SceneManager.UnloadSceneAsync(currentRoomConfig.owningScene.ScenePath);
+            }
 
-            SceneManager.UnloadSceneAsync(currentScene);
+            currentRoom = newRoom;
+            currentRoomConfig = newRoomConfig;
+            roomSwitchedCallback?.Invoke();
+
             _switchingInProgress = false;
         }
 
@@ -262,7 +288,7 @@ namespace Rooms
                     continue;
                 }
 
-                var roomAmbiences = _roomTypeToRoomConfig[door.GetConnectingRoom()].roomAmbiences;
+                var roomAmbiences = door.GetConnectingRoomConfig().roomAmbiences;
 
                 foreach (RoomAmbience roomAmbience in roomAmbiences)
                 {
@@ -291,7 +317,7 @@ namespace Rooms
                     continue;
                 }
 
-                var roomAmbiences = _roomTypeToRoomConfig[door.GetConnectingRoom()].roomAmbiences;
+                var roomAmbiences = door.GetConnectingRoomConfig().roomAmbiences;
 
                 foreach (RoomAmbience roomAmbience in roomAmbiences)
                 {
@@ -304,59 +330,48 @@ namespace Rooms
         }
 
 #if UNITY_EDITOR
-        private void OnValidate()
-        {
-            EditorApplication.delayCall += () => { _roomTypeToRoomConfig = LoadAllRooms(); };
-        }
-
-        private static SerializedDictionary<RoomType, RoomConfig> LoadAllRooms()
-        {
-            string[] guids =
-                AssetDatabase.FindAssets("t:" + typeof(RoomConfig), new[] { "Assets/Scriptable Objects/Rooms" });
-            int count = guids.Length;
-            var dict = new SerializedDictionary<RoomType, RoomConfig>();
-
-            for (int n = 0; n < count; n++)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guids[n]);
-                RoomConfig roomConfig = AssetDatabase.LoadAssetAtPath<RoomConfig>(path);
-                dict[roomConfig.roomType] = roomConfig;
-            }
-
-            return dict;
-        }
-
         public static event Action<Collider2D> OnPlayerSwitchingRoomsEditor;
 
         private void PlayerToRoom(RoomType roomType)
         {
             GameObject player = GameObject.FindWithTag("Player");
-            if (player == null)
+            if (!player)
             {
                 Debug.LogError("ERROR: Player reference not found in GameState!");
                 return;
             }
 
-            bool roomFound = false;
-            foreach (Room room in rooms)
+            foreach (RoomConfig roomConfig in roomConfigs)
             {
-                if (room.RoomType() == roomType)
+                if (roomConfig.roomType == roomType)
                 {
+                    Scene scene =
+                        UnityEngine.SceneManagement.SceneManager.GetSceneByPath(roomConfig.owningScene.ScenePath);
+                    if (!scene.IsValid() || !scene.isLoaded)
+                    {
+                        scene =
+                            EditorSceneManager.OpenScene(roomConfig.owningScene.ScenePath, OpenSceneMode.Additive);
+                    }
+
+                    var rootGameObjects = scene.GetRootGameObjects();
+                    Room room = rootGameObjects[0].GetComponent<Room>();
+
                     // Set player to spawn point of first door in the room's list.
                     player.transform.position = room.DoorSpawnPoint(0);
                     OnPlayerSwitchingRoomsEditor?.Invoke(room.CameraBounds());
 
-                    roomFound = true;
+                    // Player's collider takes a frame to update.
+                    StartCoroutine(FocusSceneView(player.GetComponent<Collider>(), false));
                     break;
                 }
             }
-
-            if (!roomFound)
-            {
-                Debug.LogError("ERROR: Room not found!");
-            }
         }
 
+        private IEnumerator FocusSceneView(Collider collider, bool instant)
+        {
+            yield return null;
+            SceneView.lastActiveSceneView.Frame(collider.bounds, instant);
+        }
 #endif
     }
 }

@@ -135,12 +135,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomConfig: {fileID: 11400000, guid: ce4ea70e9bbfe0e40be4494773e7c7a9, type: 2}
-  lightFadeDuration: 0.5
   <LightsOn>k__BackingField: 1
   cameraBounds: {fileID: 1233287487850014623}
   roomDoors:
   - {fileID: 8186094977514067202}
-  roomLights:
+  controllableLights:
   - {fileID: 1746488514945648725}
   - {fileID: 5682592822531169041}
   - {fileID: 60014052707984921}
@@ -2802,6 +2801,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2687446678122933772, guid: 303f159a3e9295844b8c141f9f1411a0,
+        type: 3}
+      propertyPath: connectingRoomConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: 5fd9dfeb3c7a85f4eb1594333f90bfca,
+        type: 2}
     - target: {fileID: 3567890794709096586, guid: 303f159a3e9295844b8c141f9f1411a0,
         type: 3}
       propertyPath: m_Name

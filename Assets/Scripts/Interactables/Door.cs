@@ -15,6 +15,7 @@ namespace Interactables
     public class Door : MonoBehaviour, IItemUser
     {
         [Separator("Room Settings")]
+        [SerializeField] private RoomConfig connectingRoomConfig;
         [SerializeField] private RoomType connectingRoom;
         [SerializeField] private Transform spawnPoint;
 
@@ -56,7 +57,7 @@ namespace Interactables
 
         private Sequence _doorOpenSequence;
 
-        public static event Action<RoomType, float, Action> OnRoomSwitching;
+        public static event Action<RoomConfig, float, Action> OnRoomSwitching;
 
         private void Awake()
         {
@@ -75,7 +76,7 @@ namespace Interactables
                     .SetEase(openEasing)
                     .OnComplete(() =>
                     {
-                        OnRoomSwitching?.Invoke(connectingRoom, -1.0f, () =>
+                        OnRoomSwitching?.Invoke(connectingRoomConfig, -1.0f, () =>
                         {
                             // _doorOpenSequence.SmoothRewind();
                             interactionBlocker?.Raise(false);
@@ -93,6 +94,11 @@ namespace Interactables
         public RoomType GetConnectingRoom()
         {
             return connectingRoom;
+        }
+
+        public RoomConfig GetConnectingRoomConfig()
+        {
+            return connectingRoomConfig;
         }
 
         public Transform GetSpawnPoint()

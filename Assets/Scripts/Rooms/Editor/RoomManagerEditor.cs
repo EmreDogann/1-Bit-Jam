@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Interactables;
 using ScriptableObjects.Rooms;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Rooms.Editor
 {
@@ -23,8 +25,8 @@ namespace Rooms.Editor
         private SerializedProperty _currentRoomProp;
 
         private int _selectedIndex;
-        private string[] _availableOptions = {};
-        private string[] _availableOptionsNicified = {};
+        private readonly string[] _availableOptions = {};
+        private readonly string[] _availableOptionsNicified = {};
 
         private MethodInfo _playerToRoomMethodInfo;
 
@@ -41,9 +43,11 @@ namespace Rooms.Editor
             _roomConfigsProp = serializedObject.FindProperty("roomConfigs");
             _currentRoomProp = serializedObject.FindProperty("currentRoom");
 
-            (_availableOptions, _availableOptionsNicified) =
-                GetAvailableRooms((RoomType)_startingRoomProp.enumValueIndex);
+            // (_availableOptions, _availableOptionsNicified) =
+            //     GetAvailableRooms((RoomType)_startingRoomProp.enumValueIndex);
             _selectedIndex = EditorPrefs.GetInt("RoomManager_StartingRoomSelectedDoor");
+
+            FindRoomConfigs();
         }
 
         private void OnDisable()
@@ -60,46 +64,47 @@ namespace Rooms.Editor
             EditorGUILayout.PropertyField(_loadRoomTypeProp);
             if (_loadRoomTypeProp.enumValueIndex == (int)InitRoomLoadType.StartingRoom)
             {
-                EditorGUI.BeginChangeCheck();
+                // EditorGUI.BeginChangeCheck();
 
                 EditorGUILayout.PropertyField(_startingRoomProp);
+                EditorGUILayout.PropertyField(_startingRoomEnteringFromProp);
 
-                if (EditorGUI.EndChangeCheck())
-                {
-                    (_availableOptions, _availableOptionsNicified) =
-                        GetAvailableRooms((RoomType)_startingRoomProp.enumValueIndex);
+                // if (EditorGUI.EndChangeCheck())
+                // {
+                //     (_availableOptions, _availableOptionsNicified) =
+                //         GetAvailableRooms((RoomType)_startingRoomProp.enumValueIndex);
+                //
+                //     Enum.TryParse(_availableOptions[0], out RoomType startingDoor);
+                //     _startingRoomEnteringFromProp.enumValueIndex = (int)startingDoor;
+                //     _selectedIndex = 0;
+                // }
 
-                    Enum.TryParse(_availableOptions[0], out RoomType startingDoor);
-                    _startingRoomEnteringFromProp.enumValueIndex = (int)startingDoor;
-                    _selectedIndex = 0;
-                }
-
-                if (_availableOptions.Length <= 0)
-                {
-                    GUIStyle labelStyle = new GUIStyle();
-                    labelStyle.alignment = TextAnchor.MiddleCenter;
-                    labelStyle.normal.textColor = Color.red;
-                    EditorGUILayout.LabelField("Room does not have any doors! Cannot spawn here!", labelStyle);
-                }
-                else
-                {
-                    EditorGUI.BeginChangeCheck();
-                    _selectedIndex = EditorGUILayout.Popup(_startingRoomEnteringFromProp.displayName,
-                        _selectedIndex, _availableOptionsNicified);
-                    if (EditorGUI.EndChangeCheck())
-                    {
-                        Enum.TryParse(_availableOptions[_selectedIndex], out RoomType startingDoor);
-                        _startingRoomEnteringFromProp.enumValueIndex = (int)startingDoor;
-                    }
-                }
+                // if (_availableOptions.Length <= 0)
+                // {
+                //     GUIStyle labelStyle = new GUIStyle();
+                //     labelStyle.alignment = TextAnchor.MiddleCenter;
+                //     labelStyle.normal.textColor = Color.red;
+                //     EditorGUILayout.LabelField("Room does not have any doors! Cannot spawn here!", labelStyle);
+                // }
+                // else
+                // {
+                // EditorGUI.BeginChangeCheck();
+                // _selectedIndex = EditorGUILayout.Popup(_startingRoomEnteringFromProp.displayName,
+                //     _selectedIndex, _availableOptionsNicified);
+                // if (EditorGUI.EndChangeCheck())
+                // {
+                //     Enum.TryParse(_availableOptions[_selectedIndex], out RoomType startingDoor);
+                //     _startingRoomEnteringFromProp.enumValueIndex = (int)startingDoor;
+                // }
+                // }
             }
 
             EditorGUILayout.PropertyField(_roomLoggingProp);
 
             EditorGUILayout.Space(EditorGUIUtility.singleLineHeight);
 
-            EditorGUILayout.PropertyField(_roomConfigsProp);
             EditorGUI.BeginDisabledGroup(true);
+            EditorGUILayout.PropertyField(_roomConfigsProp);
             EditorGUILayout.PropertyField(_currentRoomProp);
             EditorGUI.BeginDisabledGroup(false);
 
@@ -142,6 +147,50 @@ namespace Rooms.Editor
             }
 
             return new Tuple<string[], string[]>(availableRooms.ToArray(), availableRoomsNicified.ToArray());
+        }
+
+        private void FindRoomConfigs()
+        {
+            var foundAssets = FindAssetsByType<RoomConfig>(new[] { "Assets/Scriptable Objects/Rooms" });
+            if (foundAssets == null || !foundAssets.Any())
+            {
+                Debug.LogWarning(
+                    "RoomConfigs not found at path 'Assets/Scriptable Objects/Rooms'. Were they moved? Attempting to search the entire asset database instead...");
+                foundAssets = FindAssetsByType<RoomConfig>();
+                if (foundAssets == null || !foundAssets.Any())
+                {
+                    Debug.LogError(
+                        "RoomConfigs cannot be found! Are they missing from the project? RoomManager cannot function without them!");
+                    return;
+                }
+            }
+
+
+            _roomConfigsProp.ClearArray();
+            int i = 0;
+            foreach (RoomConfig asset in foundAssets)
+            {
+                _roomConfigsProp.InsertArrayElementAtIndex(i);
+                _roomConfigsProp.GetArrayElementAtIndex(i).objectReferenceValue = asset;
+
+                i++;
+            }
+
+            serializedObject.ApplyModifiedProperties();
+        }
+
+        private IEnumerable<T> FindAssetsByType<T>(string[] foldersToSearch = null) where T : Object
+        {
+            string[] guids = AssetDatabase.FindAssets($"t:{typeof(T)}", foldersToSearch);
+            foreach (string t in guids)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(t);
+                T asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                if (asset)
+                {
+                    yield return asset;
+                }
+            }
         }
     }
 }
