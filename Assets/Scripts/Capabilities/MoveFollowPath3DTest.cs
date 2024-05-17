@@ -83,7 +83,7 @@ namespace Capabilities
 
         private void Update()
         {
-            if (_isPaused || !_movementActive)
+            if (_isPaused || !_movementActive || !_path)
             {
                 return;
             }

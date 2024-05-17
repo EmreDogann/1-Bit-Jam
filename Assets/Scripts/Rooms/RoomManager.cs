@@ -118,7 +118,7 @@ namespace Rooms
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (loadRoomType != InitRoomLoadType.None && !startingRoomConfig)
+            if (!startingRoomConfig)
             {
                 Debug.LogError("Room Manager Error: Initial room not found.");
             }
